@@ -1,0 +1,22 @@
+{
+  "name": "dreamer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "@phosphor-icons/web": "^2.1.2",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "lighthouse": "^13.5.0",
+    "prettier": "^3.9.9",
+    "vite": "^7.0.0"
+  }
+}
