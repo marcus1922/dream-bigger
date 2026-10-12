@@ -1,0 +1,156 @@
+/* DREAMER flight cursor — vector states kept separate from page chrome. */
+#dreamer-cursor,
+#dreamer-trail {
+  position: fixed;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  display: none;
+}
+
+#dreamer-trail {
+  inset: 0;
+  z-index: 2147483645;
+}
+
+#dreamer-cursor {
+  --cursor-front: #f8f8f6;
+  --cursor-mid: #babcc3;
+  --cursor-edge: #090a0d;
+  --cursor-glow: rgba(255, 255, 255, .34);
+  width: 54px;
+  height: 54px;
+  z-index: 2147483646;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 120ms ease-out;
+  filter: drop-shadow(0 7px 9px rgba(0, 0, 0, .34));
+  contain: layout paint style;
+}
+
+#dreamer-cursor.is-carbon {
+  --cursor-front: #2d2e34;
+  --cursor-mid: #08090c;
+  --cursor-edge: #f2f2ef;
+  --cursor-glow: rgba(0, 0, 0, .3);
+  filter: drop-shadow(0 5px 8px rgba(255, 255, 255, .16));
+}
+
+body.dreamer-cursor-active,
+body.dreamer-cursor-active * {
+  cursor: none !important;
+}
+
+body.dreamer-cursor-active #dreamer-cursor,
+body.dreamer-cursor-active #dreamer-trail {
+  display: block;
+}
+
+body.dreamer-cursor-visible #dreamer-cursor { opacity: 1; }
+
+.dreamer-cursor-plane,
+.dreamer-cursor-text,
+.dreamer-cursor-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.dreamer-cursor-plane {
+  transform: rotate(0deg) scale(.86);
+  transform-origin: 50% 50%;
+  transition: transform 180ms cubic-bezier(.23, 1, .32, 1), filter 160ms ease;
+}
+
+.cursor-plane-art {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.cursor-plane-art-carbon { opacity: 0; }
+#dreamer-cursor.is-carbon .cursor-plane-art-white { opacity: 0; }
+#dreamer-cursor.is-carbon .cursor-plane-art-carbon { opacity: 1; }
+
+.dreamer-cursor-plane::before {
+  content: "";
+  position: absolute;
+  left: -13px;
+  top: 27px;
+  width: 24px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--cursor-front));
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 120ms ease, transform 180ms cubic-bezier(.23, 1, .32, 1);
+}
+
+#dreamer-cursor[data-mode="link"] .dreamer-cursor-plane {
+  transform: rotate(-8deg) translate3d(3px, -3px, 0) scale(1.08);
+  filter: drop-shadow(8px 7px 6px var(--cursor-glow));
+}
+#dreamer-cursor[data-mode="link"] .dreamer-cursor-plane::before {
+  opacity: .8;
+  transform: translateX(0);
+}
+
+.dreamer-cursor-text,
+.dreamer-cursor-loader { opacity: 0; }
+.dreamer-cursor-text svg { width: 24px; height: 40px; }
+.dreamer-cursor-text path { fill: var(--cursor-front); stroke: var(--cursor-edge); stroke-width: .8; }
+#dreamer-cursor[data-mode="text"] .dreamer-cursor-plane { opacity: 0; transform: scale(.72); }
+#dreamer-cursor[data-mode="text"] .dreamer-cursor-text { opacity: 1; }
+
+#dreamer-cursor[data-mode="loading"] { width: 68px; height: 68px; }
+#dreamer-cursor[data-mode="loading"] .dreamer-cursor-plane { opacity: 0; }
+#dreamer-cursor[data-mode="loading"] .dreamer-cursor-loader {
+  opacity: 1;
+  animation: dreamer-orbit 820ms linear infinite;
+}
+.dreamer-loader-ring {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: color-mix(in srgb, var(--cursor-front) 75%, transparent);
+  border-right-color: color-mix(in srgb, var(--cursor-mid) 45%, transparent);
+  box-shadow: 0 0 14px var(--cursor-glow), inset 0 0 10px var(--cursor-glow);
+  opacity: .74;
+}
+.dreamer-loader-plane {
+  position: absolute;
+  right: 1px;
+  top: 4px;
+  width: 27px;
+  height: 27px;
+  transform: rotate(42deg);
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .25));
+}
+.dreamer-loader-plane .cursor-plane-art {
+  inset: 0;
+  width: 27px;
+  height: 27px;
+}
+
+#dreamer-cursor.is-pressed .dreamer-cursor-plane {
+  transform: rotate(-5deg) scale(.78);
+  transition-duration: 100ms;
+}
+
+@keyframes dreamer-orbit { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  #dreamer-cursor,
+  #dreamer-trail { display: none !important; }
+  body.dreamer-cursor-active,
+  body.dreamer-cursor-active * { cursor: auto !important; }
+}
+
+body.reduced-motion #dreamer-cursor,
+body.reduced-motion #dreamer-trail { display: none !important; }
+body.reduced-motion.dreamer-cursor-active,
+body.reduced-motion.dreamer-cursor-active * { cursor: auto !important; }

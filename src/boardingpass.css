@@ -1,0 +1,246 @@
+/* Boarding pass adapted from the Antigravity version. */
+.pass {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.9);
+  transform: rotateX(var(--prx, 0deg)) rotateY(var(--pry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
+  overflow: hidden;
+  animation: passIn 1.2s var(--ease) both;
+}
+
+@keyframes passIn {
+  from { transform: translateY(70px) rotateX(35deg) scale(0.92); opacity: 0; }
+}
+
+.pass-foil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.6), transparent 45%),
+    conic-gradient(from calc(var(--pry, 0deg) * 8) at var(--mx) var(--my), #a4c8e155, #d6c6ff55, #ffcf9e55, #b5f1d955, #a4c8e155);
+  mix-blend-mode: soft-light;
+  opacity: 0.85;
+}
+
+.pass-main {
+  padding: 32px 36px;
+}
+
+.pass-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(12, 13, 18, 0.14);
+}
+
+.pass-brand {
+  font-family: Dreamer, sans-serif;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.pass-brand em {
+  font-family: Editorial, Georgia, serif;
+  font-size: 18px;
+  color: #4a5a78;
+}
+
+.pass-type {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #6e717c;
+}
+
+.pass-route {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 0 6px;
+}
+
+.pass-route .code {
+  display: block;
+  font-family: Dreamer, sans-serif;
+  font-size: clamp(54px, 6vw, 84px);
+  line-height: 0.85;
+}
+
+.pass-route small {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #6e717c;
+  text-transform: uppercase;
+}
+
+.pass-flightline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a5a78;
+}
+
+.pass-flightline span {
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(12, 13, 18, 0.35) 0 4px, transparent 4px 9px);
+}
+
+.pass-flightline .icon {
+  width: 24px;
+  height: 24px;
+  transform: rotate(45deg);
+}
+
+.pass-dest-label {
+  margin: 18px 0 2px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #6e717c;
+}
+
+.pass-dest {
+  margin: 0;
+  font-family: Editorial, Georgia, serif;
+  font-style: italic;
+  font-size: clamp(24px, 2.8vw, 38px);
+  line-height: 1.1;
+  color: #1e2b44;
+}
+
+.pass-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px 18px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(12, 13, 18, 0.14);
+}
+
+.pass-grid span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: #6e717c;
+  text-transform: uppercase;
+}
+
+.pass-grid b {
+  display: block;
+  margin-top: 3px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pass-barcode {
+  display: flex;
+  gap: 2px;
+  height: 38px;
+  margin-top: 22px;
+}
+
+.pass-barcode i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+
+.pass-stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  border-left: 2px dashed rgba(12, 13, 18, 0.22);
+  background: #e4e2db;
+  text-align: center;
+}
+
+.pass-stub::before,
+.pass-stub::after {
+  content: "";
+  position: absolute;
+  left: -15px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+.pass-stub::before { top: -14px; }
+.pass-stub::after { bottom: -14px; }
+
+.pass-stub canvas {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+}
+
+.stub-motto {
+  margin: 4px 0 0;
+  font-family: Dreamer, sans-serif;
+  font-size: 26px;
+  line-height: 0.9;
+}
+
+.stub-id {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pass-stub small {
+  font-size: 10px;
+  color: #6e717c;
+  margin-top: auto;
+}
+
+
+#boarding-pass { --paper: #eeece6; --ink: #121318; margin: 24px 0; text-align: left; }
+.checkout:has(#success:not([hidden])) { width: min(1080px, calc(100vw - 32px)); }
+#boarding-pass .pass-route .right { text-align: right; }
+#boarding-pass .pass-flightline i { font-size: 24px; }
+#boarding-pass .pass-brand sup { font-size: 12px; }
+#boarding-pass .pass-main, #boarding-pass .pass-grid > div { min-width: 0; }
+#boarding-pass .pass-dest { overflow-wrap: anywhere; }
+#boarding-pass .pass-barcode { overflow: hidden; }
+#boarding-pass .pass-barcode i { flex-shrink: 0; }
+@media (max-width: 720px) {
+  #boarding-pass { grid-template-columns: minmax(0, 1fr); }
+  #boarding-pass .pass-main { padding: 24px 20px; }
+  #boarding-pass .pass-top { flex-wrap: wrap; }
+  #boarding-pass .pass-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #boarding-pass .pass-stub { border-left: 0; border-top: 2px dashed #12131838; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  #boarding-pass .pass-stub::before { top: -15px; left: -14px; }
+  #boarding-pass .pass-stub::after { top: -15px; right: -14px; left: auto; bottom: auto; }
+  #boarding-pass .pass-stub canvas { width: 110px; height: 110px; }
+  #boarding-pass .pass-stub small { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { #boarding-pass { animation: none; transform: none; transition: none; } }
+body.reduced-motion #boarding-pass { animation: none; transform: none; transition: none; }
+/* Keep the route and QR within the perforated ticket at narrow widths. */
+#boarding-pass .pass-route { grid-template-columns: auto minmax(0, 1fr) auto; }
+#boarding-pass .pass-dest { font-size: clamp(24px, 2.1vw, 30px); }
+#boarding-pass .pass-stub canvas { width: 170px !important; height: 170px !important; }
+@media (max-width: 720px) {
+  #boarding-pass .pass-route { gap: 8px; }
+  #boarding-pass .pass-route .code { font-size: 46px; }
+  #boarding-pass .pass-route small { font-size: 9px; letter-spacing: .07em; }
+  #boarding-pass .pass-flightline { gap: 2px; }
+  #boarding-pass .pass-stub canvas { width: 110px !important; height: 110px !important; }
+}
