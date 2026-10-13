@@ -22,6 +22,7 @@ let manualReduced = false;
 const cursorController = initDreamerCursor();
 let returnFocus;
 $('#color-name').textContent = colors[state.color];
+productPanel?.setAttribute('data-color', state.color);
 document.querySelectorAll('.swatch[data-color]').forEach(button => { button.setAttribute('aria-label', colors[button.dataset.color]); });
 function openDialog(dialog) {
   returnFocus = document.activeElement;
@@ -59,6 +60,7 @@ document.querySelectorAll('[data-size]').forEach(button => button.addEventListen
 document.querySelectorAll('.swatch[data-color]').forEach(button => button.addEventListener('click', () => {
   state.color = button.dataset.color;
   $('#color-name').textContent = colors[state.color];
+  productPanel?.setAttribute('data-color', state.color);
   document.querySelectorAll('[data-hoodie-layer]').forEach(layer => { layer.dataset.color = state.color; });
   const backImage = document.querySelector('.hoodie-face-back img');
   if (backImage) backImage.src = backVariants[state.color];

@@ -551,3 +551,10 @@ footer p { display: block; }
   border-top: 1px solid #daddE3; border-left: 1px solid #daddE3;
   border-radius: 4px 0 0 0; transform: skewX(-18deg) rotate(8deg);
 }
+
+/* Variant art keeps the garment black; only the embroidery changes tone. */
+.hoodie-main[data-color="white"],
+.hoodie-main[data-color="grey"] { filter: none; }
+.product-title .title-back img { transition: filter 240ms ease; }
+#product[data-color="white"] .product-title .title-back img { filter: grayscale(1) brightness(.58) contrast(1.28) drop-shadow(0 5px 7px rgba(0,0,0,.65)); }
+#product[data-color="grey"] .product-title .title-back img { filter: grayscale(1) brightness(1.18) contrast(.94) drop-shadow(0 5px 7px rgba(0,0,0,.65)); }
