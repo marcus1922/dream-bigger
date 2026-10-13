@@ -13,7 +13,7 @@ const backVariants = {
   white: '/assets/hoodie-back-black.png',
   grey: '/assets/hoodie-back-grey.png'
 };
-const state = { size: 'M', color: 'onyx', pass: null, processing: false, inBag: false };
+const state = { size: 'M', color: 'onyx', pass: null, processing: false, inBag: false, cartCount: 0 };
 const checkout = $('#checkout');
 const info = $('#info-dialog');
 const reducedQuery = matchMedia('(prefers-reduced-motion: reduce)');
@@ -70,10 +70,12 @@ document.querySelectorAll('.swatch[data-color]').forEach(button => button.addEve
 function openCheckout() {
   $('#checkout-content').hidden = false; $('#processing').hidden = true; $('#success').hidden = true;
   $('#order-variant').textContent = `${colors[state.color]} / Talla ${state.size}`;
-  setBagCount(1); openDialog(checkout);
+  if (state.cartCount === 0) setBagCount(1);
+  openDialog(checkout);
 }
 const bag = $('#bag');
 function setBagCount(count, celebrate = false) {
+  state.cartCount = count;
   $('#bag-count').textContent = String(count);
   state.inBag = count > 0;
   bag.classList.toggle('has-item', state.inBag);
@@ -85,7 +87,7 @@ function setBagCount(count, celebrate = false) {
   }
 }
 $('#add-to-bag').addEventListener('click', event => {
-  setBagCount(1, true);
+  setBagCount(state.cartCount + 1, true);
   const button = event.currentTarget;
   const label = button.querySelector('span');
   const icon = button.querySelector('i');
