@@ -7,7 +7,12 @@ import '@phosphor-icons/web/regular';
 import QRCode from 'qrcode';
 
 const $ = (selector) => document.querySelector(selector);
-const colors = { onyx: 'Midnight Onyx', white: 'Cloud White', grey: 'Dream Dust Grey' };
+const colors = { onyx: 'Original', white: 'Total Black', grey: 'Letras Grises' };
+const backVariants = {
+  onyx: '/assets/hoodie-back-transparent.png',
+  white: '/assets/hoodie-back-black.png',
+  grey: '/assets/hoodie-back-grey.png'
+};
 const state = { size: 'M', color: 'onyx', pass: null, processing: false, inBag: false };
 const checkout = $('#checkout');
 const info = $('#info-dialog');
@@ -16,6 +21,8 @@ let reduced = reducedQuery.matches;
 let manualReduced = false;
 const cursorController = initDreamerCursor();
 let returnFocus;
+$('#color-name').textContent = colors[state.color];
+document.querySelectorAll('.swatch[data-color]').forEach(button => { button.setAttribute('aria-label', colors[button.dataset.color]); });
 function openDialog(dialog) {
   returnFocus = document.activeElement;
   dialog.showModal();
@@ -53,8 +60,10 @@ document.querySelectorAll('.swatch[data-color]').forEach(button => button.addEve
   state.color = button.dataset.color;
   $('#color-name').textContent = colors[state.color];
   document.querySelectorAll('[data-hoodie-layer]').forEach(layer => { layer.dataset.color = state.color; });
+  const backImage = document.querySelector('.hoodie-face-back img');
+  if (backImage) backImage.src = backVariants[state.color];
   $('#hoodie').setAttribute('aria-label', `Heavyweight Hoodie en ${colors[state.color]}. Activar para girar la prenda`);
-  $('#preview-note').textContent = state.color === 'onyx' ? 'Experiencia de compra demo. Visualización conceptual de la prenda.' : 'Color simulado digitalmente. La fotografía original corresponde a Midnight Onyx.';
+  $('#preview-note').textContent = 'Variante de bordado aplicada. La textura elevada se conserva.';
   document.querySelectorAll('.swatch').forEach(b => { const selected = b === button; b.classList.toggle('selected', selected); b.setAttribute('aria-pressed', String(selected)); });
 }));
 function openCheckout() {
@@ -149,6 +158,7 @@ document.querySelectorAll('.hoodie-face img').forEach(image => image.addEventLis
   if (!event.target.src.endsWith('campaign.png')) event.target.src = '/assets/campaign.png';
 }));
 
+let suppressTouchFlip = false;
 const hoodieControl = $('#hoodie');
 const productPanel = $('#product');
 const productTitle = productPanel?.querySelector('.product-heading h2');
@@ -180,6 +190,7 @@ function setHoodieBack(showingBack) {
   $('.interaction-note').lastChild.textContent = showingBack ? ' Volver al frente.' : ' Clic para girar.';
 }
 hoodieControl.addEventListener('click', event => {
+  if (suppressTouchFlip) { suppressTouchFlip = false; return; }
   // On a mouse, hover owns the flip; keep a click from immediately undoing it.
   // Touch and keyboard users still get the explicit toggle.
   if (event.detail > 0 && window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
@@ -202,16 +213,27 @@ function tick(time) {
   if (Math.abs(tx - tiltX) + Math.abs(ty - tiltY) > .01) schedule();
 }
 let touchId = null;
-showcase.addEventListener('pointerdown', event => { if (event.pointerType !== 'mouse' && touchId === null && !event.target.closest('button')) { touchId = event.pointerId; showcase.setPointerCapture(touchId); } });
+let touchMoved = false;
+showcase.addEventListener('pointerdown', event => {
+  if (event.pointerType !== 'mouse' && touchId === null) {
+    touchId = event.pointerId;
+    touchMoved = false;
+    showcase.setPointerCapture(touchId);
+  }
+});
 showcase.addEventListener('pointermove', event => {
   if (reduced || (event.pointerType !== 'mouse' && touchId !== event.pointerId)) return;
+  if (event.pointerType !== 'mouse') touchMoved = true;
   const rect = showcase.getBoundingClientRect();
   const px = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
   const py = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
   tx = (py - .5) * -13; ty = (px - .5) * 17;
   schedule();
 }, { passive: true });
-function resetTilt() { tx = ty = 0; touchId = null; schedule(); }
+function resetTilt() {
+  if (touchId !== null && touchMoved) suppressTouchFlip = true;
+  tx = ty = 0; touchId = null; touchMoved = false; schedule();
+}
 showcase.addEventListener('pointerleave', resetTilt); showcase.addEventListener('pointerup', resetTilt); showcase.addEventListener('pointercancel', resetTilt);
 function updateMotion() { reduced = reducedQuery.matches; document.body.classList.toggle('reduced-motion', reduced); cursorController.setReduced(reduced); if (reduced) { cancelAnimationFrame(frame); frame = 0; stageBackground.style.transform = ''; } }
 reducedQuery.addEventListener('change', updateMotion); updateMotion();

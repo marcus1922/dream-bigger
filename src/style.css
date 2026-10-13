@@ -471,6 +471,8 @@ footer {
   height: 100%;
   object-fit: contain;
   object-position: left center;
+  mix-blend-mode: screen;
+  filter: brightness(1.12) contrast(1.08);
 }
 footer p { display: block; }
 
