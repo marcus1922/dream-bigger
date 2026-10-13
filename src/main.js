@@ -22,7 +22,6 @@ let manualReduced = false;
 const cursorController = initDreamerCursor();
 let returnFocus;
 $('#color-name').textContent = colors[state.color];
-productPanel?.setAttribute('data-color', state.color);
 document.querySelectorAll('.swatch[data-color]').forEach(button => { button.setAttribute('aria-label', colors[button.dataset.color]); });
 function openDialog(dialog) {
   returnFocus = document.activeElement;
@@ -164,6 +163,7 @@ let suppressTouchFlip = false;
 const hoodieControl = $('#hoodie');
 const productPanel = $('#product');
 const productTitle = productPanel?.querySelector('.product-heading h2');
+productPanel?.setAttribute('data-color', state.color);
 if (productTitle) {
   const frontTitle = document.createElement('span');
   frontTitle.className = 'title-front';
